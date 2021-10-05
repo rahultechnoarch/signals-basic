@@ -1,8 +1,13 @@
-from django.db.models.signals import pre_save, post_save, m2m_changed
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
-from  django.contrib.auth.models import User
-from cars.models import Car
-from buyers.models import Buyer
+from django.contrib.auth.models import User
+
 from orders.models import Order
-from sales.models import Sales
+from sales.models import Sale
+
+@receiver(pre_delete, sender=Sale)
+def create_delete_change_order(sender, instance, **kwargs):
+    obj = instance.order
+    obj.active = False
+    obj.save()
 
